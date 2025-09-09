@@ -1,7 +1,7 @@
 {
   "name": "obsidian-dice",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "homepage": "https://github.com/SpookyJelly/EMBER-Obsidian-Dice",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "lucide-react": "^0.543.0",
