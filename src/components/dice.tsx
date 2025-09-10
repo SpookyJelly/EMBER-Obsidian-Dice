@@ -107,7 +107,6 @@ export function Dice({
         </button>
       )}
       <div style={{
-        marginTop: 8,
         borderRadius: 8,
         border: '1px solid #d1d5db',
         background: dieBgColor ?? '#111',

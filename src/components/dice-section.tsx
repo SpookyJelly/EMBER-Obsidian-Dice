@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Dice, { type DieFace } from './dice'
 import SectionCard from './section-card'
 
@@ -14,6 +14,8 @@ type DiceSectionProps = {
 export function DiceSection({ title, accent, faces, sides, minCount = 1, maxCount = 10 }: DiceSectionProps) {
   const [count, setCount] = useState(Math.min(Math.max(minCount, 1), maxCount))
   const [signal, setSignal] = useState<number | null>(null)
+  const [selectedDice, setSelectedDice] = useState<Set<number>>(new Set())
+  const [diceSignals, setDiceSignals] = useState<Map<number, number>>(new Map())
 
   // normalize faces to include textual value for logging
   const normalizedFaces: readonly DieFace[] = useMemo(() => {
@@ -26,9 +28,56 @@ export function DiceSection({ title, accent, faces, sides, minCount = 1, maxCoun
 
   const canAdjust = minCount !== maxCount
 
+  // Clear selection and signals when count changes
+  useEffect(() => {
+    setSelectedDice(new Set())
+    setDiceSignals(new Map())
+    setSignal(null) // Clear global signal to prevent auto-rolling new dice
+  }, [count])
+
   const handleRollAll = () => {
     resultsRef.current = []
     setSignal((s) => (s == null ? 0 : s + 1))
+    setSelectedDice(new Set()) // Clear selection after roll all
+    
+    // Clear all signals after roll duration (500ms)
+    setTimeout(() => {
+      setDiceSignals(new Map())
+      setSignal(null) // Clear global signal as well
+    }, 500)
+  }
+
+  const handleDiceClick = (index: number) => {
+    setSelectedDice(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }
+
+  const handleRollSelected = () => {
+    if (selectedDice.size === 0) return
+    
+    // Create individual signals for selected dice only
+    setDiceSignals(prev => {
+      const newMap = new Map(prev)
+      selectedDice.forEach(index => {
+        const currentSignal = newMap.get(index) || 0
+        newMap.set(index, currentSignal + 1)
+      })
+      return newMap
+    })
+    setSelectedDice(new Set()) // Clear selection after roll
+    
+    // Clear all signals after roll duration (500ms)
+    setTimeout(() => {
+      setDiceSignals(new Map())
+      setSignal(null) // Clear global signal as well
+    }, 500)
   }
 
   const resultsRef = useRef<string[]>([])
@@ -62,19 +111,45 @@ export function DiceSection({ title, accent, faces, sides, minCount = 1, maxCoun
             <button onClick={() => setCount((c) => Math.min(maxCount, c + 1))} style={{ padding: '8px 12px' }}>+</button>
           </>
         )}
-        <button onClick={handleRollAll} style={{ padding: '8px 12px', marginLeft: 'auto' }}>Roll All</button>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+          <button 
+            onClick={handleRollSelected} 
+            disabled={selectedDice.size === 0}
+            style={{ 
+              padding: '8px 12px',
+              opacity: selectedDice.size === 0 ? 0.5 : 1,
+              cursor: selectedDice.size === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Reroll ({selectedDice.size})
+          </button>
+          <button onClick={handleRollAll} style={{ padding: '8px 12px' }}>Roll All</button>
+        </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 48px)', gap: 6, justifyContent: 'space-between' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 48px)', gap: 8, justifyContent: 'space-between' }}>
         {Array.from({ length: count }).map((_, i) => (
-          <Dice
+          <div 
             key={i}
-            faces={normalizedFaces}
-            sides={sides}
-            onRoll={onChildRoll}
-            hideButton
-            autoRollSignal={signal ?? undefined}
-            dieBgColor={sides === 6 ? '#f7f7f7' : accent}
-          />
+            onClick={() => handleDiceClick(i)}
+            style={{ 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 8,
+              outline: selectedDice.has(i) ? `1px solid ${accent}` : 'none',
+              outlineOffset: selectedDice.has(i) ? '2px' : '0px',
+            }}
+          >
+            <Dice
+              faces={normalizedFaces}
+              sides={sides}
+              onRoll={onChildRoll}
+              hideButton
+              autoRollSignal={diceSignals.get(i) ?? signal ?? undefined}
+              dieBgColor={sides === 6 ? '#f7f7f7' : accent}
+            />
+          </div>
         ))}
       </div>
       <div style={{ marginTop: 8 }}>
