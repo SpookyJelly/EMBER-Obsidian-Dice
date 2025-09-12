@@ -29,7 +29,7 @@ export default function NavBar() {
         </strong>
         <div style={{ marginLeft: "auto" }}>
           <a
-            href="https://github.com/SpookyJelly/EMBER-Obsidian-Dice/issues/new"
+            href="https://forms.gle/8arRz1n2oAphCzzA7"
             target="_blank"
             rel="noopener noreferrer"
             style={{
