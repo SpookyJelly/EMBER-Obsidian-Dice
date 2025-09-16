@@ -21,8 +21,8 @@ export const hitD6: readonly DieFace[] = [
 // Mapping based on description; using icons to represent faces
 export const weakAttackD8: readonly DieFace[] = [
   { label: <DiamondIcon filled={false} />, value: "◇" },
-  { label: <DiamondIcon filled={true} />, value: "◆", weight: 2 },
-  { label: <DiamondIcon filled={true} />, value: "◆", weight: 2 },
+  { label: <DiamondIcon filled={true} />, value: "◆" },
+  { label: <DiamondIcon filled={true} />, value: "◆" },
   {
     label: (
       <div style={{ display: "flex", gap: 2 }}>
@@ -31,7 +31,6 @@ export const weakAttackD8: readonly DieFace[] = [
       </div>
     ),
     value: "◆◆",
-    weight: 2,
   },
   {
     label: (
@@ -41,7 +40,6 @@ export const weakAttackD8: readonly DieFace[] = [
       </div>
     ),
     value: "◆◆",
-    weight: 2,
   },
   { label: icon(Eye), value: "eye" },
   { label: icon(Zap), value: "zap" },
@@ -51,10 +49,10 @@ export const weakAttackD8: readonly DieFace[] = [
 // 3) 강한 공격 (D8) - red emphasis
 export const strongAttackD8: readonly DieFace[] = [
   { label: <DiamondIcon />, value: "◇" },
-  { label: <ExplosionIcon filled />, value: "explosion", weight: 4 },
-  { label: <ExplosionIcon filled />, value: "explosion", weight: 4 },
-  { label: <ExplosionIcon filled />, value: "explosion", weight: 4 },
-  { label: <ExplosionIcon filled />, value: "explosion", weight: 4 },
+  { label: <ExplosionIcon filled />, value: "explosion" },
+  { label: <ExplosionIcon filled />, value: "explosion" },
+  { label: <ExplosionIcon filled />, value: "explosion" },
+  { label: <ExplosionIcon filled />, value: "explosion" },
   { label: <ExplosionIcon />, value: "explosion-outline" },
   { label: icon(Zap), value: "zap" },
   { label: icon(Eye), value: "eye" },
@@ -71,7 +69,7 @@ export const defenseD8: readonly DieFace[] = [
     ),
     value: "shieldx2",
   },
-  { label: <ShieldIcon filled />, value: "shield", weight: 2 },
+  { label: <ShieldIcon filled />, value: "shield" },
   { label: icon(Zap), value: "zap" },
   { label: icon(Zap), value: "zap" },
   { label: icon(RotateCcw), value: "rotate" },
